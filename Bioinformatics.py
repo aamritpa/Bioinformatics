@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[122]:
+# In[185]:
 
 
 import numpy as np
@@ -11,77 +11,94 @@ import matplotlib.pyplot as plt
 import sys
 
 
-# In[136]:
+# In[186]:
 
 
-Filename =sys.argv[1] #Input file from User
+#Input file must be given to run the code.
+#For Example Run(in terminal) 'python3 Bioinformatics input.xlsx'
 
-df = pd.read_excel(Filename)#  r'/home/amritpal/Desktop/uniprot-human-filtered-reviewed:yes.xlsx') #Read EXCEL Files
-new_data= pd.DataFrame()  #NEW DATA FRAME WITH EMPTY DATA
+Filename =sys.argv[1] # Read input file 
 
-
-# In[137]:
-
-
-# Storing all information
-new_data['Entry']=df['Entry']
-new_data['Entry name']=df['Entry name']
-new_data['Protein names']=df['Protein names']
-new_data['Gene names']=df['Gene names']
-new_data['Length']=df['Length']
+df = pd.read_excel('input.xlsx')# Read EXCEL Files and storing in database 'df'
+data= pd.DataFrame()# Creating New Data Frame 
 
 
-# In[138]:
+# In[187]:
 
 
-new_data['Organism']=df['Organism']
-new_data['Mass']=df['Mass']
-columns=new_data[new_data['Organism'].str.contains("Human")]
-new_data= columns
+# Storing Usefull information From the database 'df' 
+data['Entry']=df['Entry'] #Storing Entry
+data['Entry name']=df['Entry name']  #Storing Entry Name
+data['Protein names']=df['Protein names']  #Storing Protein Names
+data['Gene names']=df['Gene names'] # Storing Gene Names
+data['Length']=df['Length'] # Storing Length
 
 
-# In[140]:
+# In[188]:
 
 
-new_data['Disulfide bond']=df['Disulfide bond'] #STORE 'ENTRY' COLUMN IN NEW DATA
-new_data['Position']= df['Glycosylation'].str.extract(r'(\d+)')[0] # GET THE GLYCOSYLATION VALUE
+data['Organism']=df['Organism'] # Storing Type of Organism
+data['Mass']=df['Mass'] #Storing Mass
+ 
 
 
-# In[141]:
+# In[189]:
 
 
-new_data=new_data.dropna().reset_index(drop=True) # DROP ALL THOSE ROWS WHOSE DATA IS NOT REQUIRED
+#Now removing the extra data we dont need and containg only organism 'Human'
+columns=data[data['Organism'].str.contains("Human")] #Selecting only organism which contains HUMANS
+data= columns
 
 
-# In[142]:
+# In[190]:
 
 
-Tem_data= new_data['Disulfide bond']
-
-def getdata(data):
-    return re.findall('\d+ \d+',data)
-
-new_data['Disulfide bond']= Tem_data.apply(getdata) # get postions for all 
-
-print(new_data)
+data['Disulfide bond']=df['Disulfide bond'] # Storing Disulfide bond 
+data['Glycosylation']= df['Glycosylation']# Storing Glycosylation Position
 
 
-# In[114]:
+# In[191]:
 
 
-new_data.to_excel('output.xlsx')
+data=data.dropna().reset_index(drop=True) # Drop all rows which contains Not a number and reset the index 
+
+
+# In[192]:
+
+
+# Working on getting the relative positions of the Disulfide bond
+disulfide_column= data['Disulfide bond'] # Storing data temporary as 'disulfide_column'
+def getdata(newdata):
+    return re.findall('\d+ \d+',newdata)
+
+data['Disulfide bond']= disulfide_column.apply(getdata) # Function call which gives all the positons 
+
+
+# In[193]:
+
+
+#Working on getting the positions of N-linked Glycosylation
+Glyco_data= data['Glycosylation'] # Storing data temporary as 'Glyco_data'
+
+def getGlycoNLinked(data):   #Making a Function to get the positions
+    return re.findall('\d+\s* N-linked',data) # The return data will contain 'position and N-linked pattern'
+data['Glycosylation']= Glyco_data.apply(getGlycoNLinked) # the return data will be like '49 N-linked'
 
 
 # In[ ]:
 
 
+#Now Removing the extra word 'N-linked' and getting all positions 
+temp_data= data['Glycosylation'].astype(str)
+def getValue(data):
+    return re.findall('\d+',data) # return all positions
+data['Glycosylation']= temp_data.apply(getValue) 
 
 
-
-# In[ ]:
-
+# In[199]:
 
 
+data.to_excel('output.xlsx') # Output an Excel File with refined data.
 
 
 # In[ ]:

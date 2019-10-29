@@ -122,37 +122,41 @@ i=0;
 while i<b.size:
     for j in range(lenA[i]):
         Position=int(a[i][j])
-        rel_pos[i]=rel_pos[i]+'{'
+        rel_pos[i]=rel_pos[i]+str(a[i][j])+'{|'
         for k in range(lenB[i]):
             split = re.findall('\d+',b[i][k]) 
             firstPair= int(split[0])
             secondPair=int(split[1])
             if Position< firstPair:
                 rel_pos[i] = rel_pos[i]+'o'+str(Position-firstPair)
-            else:
-                rel_pos[i]=  rel_pos[i]+'i' + str(Position-firstPair)
-            if Position<=secondPair:
-                rel_pos[i] = rel_pos[i]+'i'+ str(secondPair-Position)
-            else:
                 rel_pos[i] = rel_pos[i]+'o'+str(Position-secondPair)
+            elif Position>= firstPair and Position<=secondPair:
+                rel_pos[i]=  rel_pos[i]+'i' + str(Position-firstPair)
+                rel_pos[i] = rel_pos[i]+'i'+ str(Position-secondPair)
+            else:
+                rel_pos[i] = rel_pos[i]+'o'+str(Position-firstPair)
+                rel_pos[i] = rel_pos[i]+'o'+str(Position-secondPair)
+            rel_pos[i]=rel_pos[i]+'|'    
         rel_pos[i]=rel_pos[i]+'}'
     i=i+1
-
-
-# In[143]:
-
-
 data['rel_pos']= rel_pos
 
 
-# In[146]:
+#Intrabond distance formation
+intrabond=pd.Series(b.size,dtype=np.str)
+for i in range(a.size):
+    intrabond[i]=''
+j=0;
+while j<b.size:
+    for k in range(lenB[j]):
+        split = re.findall('\d+',b[j][k]) 
+        firstPair= int(split[0])
+        secondPair=int(split[1])
+        intrabond[j]=intrabond[j]+str(secondPair-firstPair)+'|'    
+    j=j+1
+data['intrabond']=intrabond
 
-
-
-
-
-# In[ ]:
-
+data.to_excel('output.xlsx') # Output an Excel File with refined data.
 
 
 

@@ -145,13 +145,88 @@ while i<b.size:
 data['rel_pos']= rel_pos
 
 
-# In[146]:
+# In[50]:
 
 
+#Calculating Interbond Distance
+interbond_distance= pd.Series(a.size,dtype= np.str)
+
+for i in range(a.size):
+    interbond_distance[i]=''
+
+for i in range(a.size):
+    
+    if lenB[i]==0:
+        interbond_distance[i]='No pair'
+        
+    if lenB[i]==1:
+        interbond_distance[i]='Only One pair'
+    
+    for r in range(lenB[i]-1):
+        split1= re.findall('\d+',data['Disulfide bond'][i][r])
+        split2= re.findall('\d+',data['Disulfide bond'][i][r+1])
+        interbond_distance[i]= interbond_distance[i]+ str(int(split2[0])-int(split1[1]))+ '|'
+        
+data['interbond_distance']=distance  
 
 
+# In[51]:
 
-# In[ ]:
+
+#Intrabond distance formation
+intrabond=pd.Series(b.size,dtype=np.str)
+for i in range(a.size):
+    intrabond[i]=''
+j=0;
+while j<b.size:
+    for k in range(lenB[j]):
+        split = re.findall('\d+',b[j][k]) 
+        firstPair= int(split[0])
+        secondPair=int(split[1])
+        intrabond[j]=intrabond[j]+str(secondPair-firstPair)+'|'    
+    j=j+1
+data['intrabond']=intrabond
+
+
+# In[52]:
+
+
+#number of pairs of disuphide bonds
+data['No. Disulphide bonds']=lenB
+
+
+# In[53]:
+
+
+#1st disulphide pair to N-terminus distance
+first_pos = pd.Series(a.size,dtype=np.int)
+for r in range(a.size): 
+    split = re.findall('\d+',data['Disulfide bond'][r][0]) 
+    firstPair= int(split[0])
+    first_pos[r]= firstPair
+data['first_position_occurance']=first_pos
+
+
+# In[54]:
+
+
+#last disulphide pair to C-terminus distance
+last_pos= pd.Series(a.size,dtype=np.int)
+for r in range(a.size):
+    split= re.findall('\d+',data['Disulfide bond'][r][(lenB[r]-1)])
+    lastPair= int(split[1])
+    last_pos[r] = lastPair 
+data['last_position_occurance']=last_pos
+
+
+# In[55]:
+
+
+data.to_excel('output.xlsx') # Output an Excel File with refined data.
+
+
+# In[36]:
+
 
 
 

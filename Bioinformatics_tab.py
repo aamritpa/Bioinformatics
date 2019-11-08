@@ -1,24 +1,14 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[128]:
-
-
 import numpy as np
 import pandas as pd
 import re 
 import matplotlib.pyplot as plt 
 import sys
 
+#Input file must be given to run the code.
+#For Example Run(in terminal) 'python3 Bioinformatics.py input.tab'
 
-# In[129]:
-
-
-df = pd.read_csv("uniprot-human-filtered-reviewed%3Ayes.tab", sep='\t')
-
-
-# In[132]:
-
+filename= sys.argv[1]
+df = pd.read_csv(filename, sep='\t')
 
 # Storing Usefull information From the database 'df' 
 data=pd.DataFrame()
@@ -27,40 +17,17 @@ data['Entry name']=df['Entry name']  #Storing Entry Name
 data['Protein names']=df['Protein names']  #Storing Protein Names
 data['Gene names']=df['Gene names'] # Storing Gene Names
 data['Length']=df['Length'] # Storing Length
-
-
-# In[133]:
-
-
 data['Organism']=df['Organism'] # Storing Type of Organism
 data['Mass']=df['Mass'] #Storing Mass
  
-
-
-# In[134]:
-
 
 #Now removing the extra data we dont need and containg only organism 'Human'
 columns=data[data['Organism'].str.contains("Human")] #Selecting only organism which contains HUMANS
 data= columns
 
-
-# In[135]:
-
-
 data['Disulfide bond']= df['Disulfide bond'] # Storing Disulfide bond 
 data['Glycosylation']= df['Glycosylation']# Storing Glycosylation Position
-data
-
-
-# In[136]:
-
-
 data=data.dropna().reset_index(drop=True) # Drop all rows which contains Not a number and reset the index 
-data
-
-
-# In[137]:
 
 
 # Working on getting the relative positions of the Disulfide bond
@@ -71,9 +38,6 @@ def getdata(newdata):
 data['Disulfide bond']= disulfide_column.apply(getdata) # Function call which gives all the positons 
 
 
-# In[138]:
-
-
 #Working on getting the positions of N-linked Glycosylation
 Glyco_data= data['Glycosylation'] # Storing data temporary as 'Glyco_data'
 
@@ -82,25 +46,13 @@ def getGlycoNLinked(data):   #Making a Function to get the positions
 data['Glycosylation']= Glyco_data.apply(getGlycoNLinked) # the return data will be like '49 N-linked'
 
 
-# In[139]:
-
-
 #Now Removing the extra word 'N-linked' and getting all positions 
 temp_data= data['Glycosylation'].astype(str)
 def getValue(data):
     return re.findall('\d+',data) # return all positions
 data['Glycosylation']= temp_data.apply(getValue) 
 
-
-# In[ ]:
-
-
-
-
-
-# In[141]:
-
-
+# Creating a temporary dataframe for total length in columns and length in rows(like number of pairs in each index).
 a= pd.DataFrame()
 b= pd.DataFrame()
 
@@ -114,9 +66,7 @@ rel_pos = pd.Series(a.size,dtype=np.str)
 for i in range(a.size):
     rel_pos[i]=''
 
-
-# In[142]:
-
+# Now using loop and properties of Python library 're' to get values and finding positions between disulphide bond and glycosation.
 
 i=0;
 while i<b.size:
@@ -142,10 +92,6 @@ while i<b.size:
 data['rel_pos']= rel_pos
 
 
-<<<<<<< HEAD
-# In[50]:
-
-
 #Calculating Interbond Distance
 interbond_distance= pd.Series(a.size,dtype= np.str)
 
@@ -165,14 +111,8 @@ for i in range(a.size):
         split2= re.findall('\d+',data['Disulfide bond'][i][r+1])
         interbond_distance[i]= interbond_distance[i]+ str(int(split2[0])-int(split1[1]))+ '|'
         
-data['interbond_distance']=distance  
+data['interbond_distance']=interbond_distance 
 
-
-# In[51]:
-
-
-=======
->>>>>>> 6f26b54100771718c7b8900b47a5e4f748553120
 #Intrabond distance formation
 intrabond=pd.Series(b.size,dtype=np.str)
 for i in range(a.size):
@@ -187,16 +127,9 @@ while j<b.size:
     j=j+1
 data['intrabond']=intrabond
 
-<<<<<<< HEAD
-
-# In[52]:
-
 
 #number of pairs of disuphide bonds
 data['No. Disulphide bonds']=lenB
-
-
-# In[53]:
 
 
 #1st disulphide pair to N-terminus distance
@@ -208,9 +141,6 @@ for r in range(a.size):
 data['first_position_occurance']=first_pos
 
 
-# In[54]:
-
-
 #last disulphide pair to C-terminus distance
 last_pos= pd.Series(a.size,dtype=np.int)
 for r in range(a.size):
@@ -219,19 +149,21 @@ for r in range(a.size):
     last_pos[r] = lastPair 
 data['last_position_occurance']=last_pos
 
+#Calculate average distance of intrabond distance
+def intrabond_Average(data):
+    return re.findall('\d+',data)
+average= data['intrabond'].apply(intrabond_Average)
+lenIntra=average.str.len()
 
-# In[55]:
+averageintrabond= np.zeros(a.size)
+for i in range(a.size):
+    totalsum=0
+    for j in range(lenIntra[i]):
+        totalsum= totalsum+int(average[i][j])
+    averageintrabond[i]=totalsum/lenIntra[i]
+data['average_Intrabond']=averageintrabond
 
 
-data.to_excel('output.xlsx') # Output an Excel File with refined data.
-
-
-# In[36]:
-
-
-=======
-data.to_excel('output.xlsx') # Output an Excel File with refined data.
->>>>>>> 6f26b54100771718c7b8900b47a5e4f748553120
-
+data.to_csv('output.csv') # Output an Excel File with refined data.
 
 

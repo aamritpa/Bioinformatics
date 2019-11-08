@@ -139,6 +139,7 @@ while i<b.size:
 data['rel_pos']= rel_pos
 
 
+<<<<<<< HEAD
 # In[50]:
 
 
@@ -167,6 +168,8 @@ data['interbond_distance']=distance
 # In[51]:
 
 
+=======
+>>>>>>> 6f26b54100771718c7b8900b47a5e4f748553120
 #Intrabond distance formation
 intrabond=pd.Series(b.size,dtype=np.str)
 for i in range(a.size):
@@ -181,6 +184,7 @@ while j<b.size:
     j=j+1
 data['intrabond']=intrabond
 
+<<<<<<< HEAD
 
 # In[52]:
 
@@ -230,6 +234,11 @@ data.to_excel('output.xlsx') # Output an Excel File with refined data.
 
 
 
+=======
+data.to_excel('output.xlsx') # Output an Excel File with refined data.
+
+
+>>>>>>> 6f26b54100771718c7b8900b47a5e4f748553120
 
 # In[ ]:
 

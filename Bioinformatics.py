@@ -1,17 +1,32 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[168]:
+
+
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[38]:
+
+
 import numpy as np
 import pandas as pd
 import re 
 import matplotlib.pyplot as plt 
 import sys
 
-#Input file must be given to run the code.
-#For Example Run(in terminal) 'python3 Bioinformatics.py input.tab'
 
-filename= sys.argv[1]
-df = pd.read_csv(filename, sep='\t')
+#Input file must be given to run the code.
+#For Example Run(in terminal) 'python3 Bioinformatics input.xlsx'
+
+#Filename =sys.argv[1] # Read input file 
+
+df = pd.read_excel('input.xlsx')# Read EXCEL Files and storing in database 'df'
+data= pd.DataFrame()# Creating New Data Frame 
+
 
 # Storing Usefull information From the database 'df' 
-data=pd.DataFrame()
 data['Entry']=df['Entry'] #Storing Entry
 data['Entry name']=df['Entry name']  #Storing Entry Name
 data['Protein names']=df['Protein names']  #Storing Protein Names
@@ -19,16 +34,15 @@ data['Gene names']=df['Gene names'] # Storing Gene Names
 data['Length']=df['Length'] # Storing Length
 data['Organism']=df['Organism'] # Storing Type of Organism
 data['Mass']=df['Mass'] #Storing Mass
- 
+data['Status']=df['Status']
 
 #Now removing the extra data we dont need and containg only organism 'Human'
 columns=data[data['Organism'].str.contains("Human")] #Selecting only organism which contains HUMANS
 data= columns
 
-data['Disulfide bond']= df['Disulfide bond'] # Storing Disulfide bond 
+data['Disulfide bond']=df['Disulfide bond'] # Storing Disulfide bond 
 data['Glycosylation']= df['Glycosylation']# Storing Glycosylation Position
 data=data.dropna().reset_index(drop=True) # Drop all rows which contains Not a number and reset the index 
-
 
 # Working on getting the relative positions of the Disulfide bond
 disulfide_column= data['Disulfide bond'] # Storing data temporary as 'disulfide_column'
@@ -36,6 +50,10 @@ def getdata(newdata):
     return re.findall('\d+ \d+',newdata)
 
 data['Disulfide bond']= disulfide_column.apply(getdata) # Function call which gives all the positons 
+
+
+# In[169]:
+
 
 
 #Working on getting the positions of N-linked Glycosylation

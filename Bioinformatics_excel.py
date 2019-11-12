@@ -102,6 +102,58 @@ while i<b.size:
 data['rel_pos']= rel_pos
 
 
+
+# Creating a temporary dataframe for total length in columns and length in rows(like number of pairs in each index).
+a= pd.DataFrame()
+b= pd.DataFrame()
+
+a =pd.Series(data['Glycosylation'])
+b =pd.Series(data['Disulfide bond'])
+
+lenB=b.str.len()
+lenA=a.str.len()
+
+rel_pos = pd.Series(a.size,dtype=np.str)
+for i in range(a.size):
+    rel_pos[i]=''
+    
+InsidePairs=pd.Series(b.size,dtype=np.str)
+InsidePairsLength=np.zeros(b.size,dtype=np.int)
+for i in range(a.size):
+    InsidePairs[i]=''
+
+# Now using loop and properties of Python library 're' to get values and finding positions between disulphide bond and glycosation.
+
+i=0;
+while i<b.size:
+    for j in range(lenA[i]):
+        Position=int(a[i][j])
+        rel_pos[i]=rel_pos[i]+str(a[i][j])+'{|'
+        for k in range(lenB[i]):
+            split = re.findall('\d+',b[i][k]) 
+            firstPair= int(split[0])
+            secondPair=int(split[1])
+            if Position< firstPair:
+                rel_pos[i] = rel_pos[i]+'o'+str(Position-firstPair)
+                rel_pos[i] = rel_pos[i]+'o'+str(Position-secondPair)
+            elif Position>= firstPair and Position<=secondPair:
+                rel_pos[i]=  rel_pos[i]+'i' + str(Position-firstPair)
+                rel_pos[i] = rel_pos[i]+'i'+ str(Position-secondPair)
+                InsidePairs[i]= InsidePairs[i] + str('('+ str(firstPair)+','+str(secondPair)+')')
+                InsidePairsLength[i]=InsidePairsLength[i]+ (secondPair-firstPair)
+            else:
+                rel_pos[i] = rel_pos[i]+'o'+str(Position-firstPair)
+                rel_pos[i] = rel_pos[i]+'o'+str(Position-secondPair)
+            rel_pos[i]=rel_pos[i]+'|'    
+        rel_pos[i]=rel_pos[i]+'}'
+    i=i+1
+data['rel_pos']= rel_pos
+data['In_Gly_Dis_Pair']=InsidePairs
+
+
+# In[170]:
+
+
 #Calculating Interbond Distance
 interbond_distance= pd.Series(a.size,dtype= np.str)
 
@@ -174,6 +226,20 @@ for i in range(a.size):
 data['average_Intrabond']=averageintrabond
 
 
-data.to_excel('output.xlsx') # Output an Excel File with refined data.
+# In[172]:
 
+
+#calculating average distance of those pairs of disulphide bonds that have Glycosylation Inside.
+inside_length = np.zeros(a.size,dtype=np.int)
+for r in range(a.size):
+    inside_length[r]=len(re.findall('\d+',data['In_Gly_Dis_Pair'][r]))/2
+    if inside_length[r]!=0:
+        InsidePairsLength[r]=InsidePairsLength[r]/inside_length[r]
+data['avg_Inside_Pairs_Length']=InsidePairsLength
+
+
+# In[174]:
+
+
+data.to_excel('output.xlsx') # Output an Excel File with refined data.
 

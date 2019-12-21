@@ -10,8 +10,9 @@ import sys
 filename= sys.argv[1]
 df = pd.read_csv(filename, sep='\t')
 
-# Storing Usefull information From the database 'df' 
 data=pd.DataFrame()
+
+# Storing Usefull information From the database 'df' 
 data['Entry']=df['Entry'] #Storing Entry
 data['Entry name']=df['Entry name']  #Storing Entry Name
 data['Protein names']=df['Protein names']  #Storing Protein Names
@@ -19,16 +20,15 @@ data['Gene names']=df['Gene names'] # Storing Gene Names
 data['Length']=df['Length'] # Storing Length
 data['Organism']=df['Organism'] # Storing Type of Organism
 data['Mass']=df['Mass'] #Storing Mass
- 
+data['Status']=df['Status']
 
 #Now removing the extra data we dont need and containg only organism 'Human'
 columns=data[data['Organism'].str.contains("Human")] #Selecting only organism which contains HUMANS
 data= columns
 
-data['Disulfide bond']= df['Disulfide bond'] # Storing Disulfide bond 
+data['Disulfide bond']=df['Disulfide bond'] # Storing Disulfide bond 
 data['Glycosylation']= df['Glycosylation']# Storing Glycosylation Position
 data=data.dropna().reset_index(drop=True) # Drop all rows which contains Not a number and reset the index 
-
 
 # Working on getting the relative positions of the Disulfide bond
 disulfide_column= data['Disulfide bond'] # Storing data temporary as 'disulfide_column'
@@ -36,6 +36,10 @@ def getdata(newdata):
     return re.findall('\d+ \d+',newdata)
 
 data['Disulfide bond']= disulfide_column.apply(getdata) # Function call which gives all the positons 
+
+
+# In[2]:
+
 
 
 #Working on getting the positions of N-linked Glycosylation
@@ -53,14 +57,14 @@ def getValue(data):
 data['Glycosylation']= temp_data.apply(getValue) 
 
 
-
 # Creating a temporary dataframe for total length in columns and length in rows(like number of pairs in each index).
 a= pd.DataFrame()
 b= pd.DataFrame()
-
+bond=pd.DataFrame()
 a =pd.Series(data['Glycosylation'])
 b =pd.Series(data['Disulfide bond'])
-
+bond=pd.DataFrame()
+bond['data']=data['Disulfide bond']
 lenB=b.str.len()
 lenA=a.str.len()
 
@@ -75,7 +79,7 @@ for i in range(a.size):
 
 # Now using loop and properties of Python library 're' to get values and finding positions between disulphide bond and glycosation.
 
-i=0;
+i=0
 while i<b.size:
     for j in range(lenA[i]):
         Position=int(a[i][j])
@@ -102,7 +106,7 @@ data['rel_pos']= rel_pos
 data['In_Gly_Dis_Pair']=InsidePairs
 
 
-# In[170]:
+# In[3]:
 
 
 #Calculating Interbond Distance
@@ -177,20 +181,86 @@ for i in range(a.size):
 data['average_Intrabond']=averageintrabond
 
 
-# In[172]:
+# In[4]:
 
 
 #calculating average distance of those pairs of disulphide bonds that have Glycosylation Inside.
+temp_length=pd.Series(b.size,dtype=np.str)
+for i in range(a.size):
+    temp_length[i]=''
 inside_length = np.zeros(a.size,dtype=np.int)
 for r in range(a.size):
     inside_length[r]=len(re.findall('\d+',data['In_Gly_Dis_Pair'][r]))/2
+    temp_length[r]=re.findall('\d+',data['In_Gly_Dis_Pair'][r])
     if inside_length[r]!=0:
         InsidePairsLength[r]=InsidePairsLength[r]/inside_length[r]
 data['avg_Inside_Pairs_Length']=InsidePairsLength
 
 
-# In[174]:
+# In[5]:
 
 
-data.to_excel('output.xlsx') # Output an Excel File with refined data.
+#If the glyco is inside then putting the sulphide position 'nil' at that point.
+i=0
+while i<b.size:
+    for j in range(lenA[i]):
+        Position=int(a[i][j])
+        for k in range(lenB[i]):
+            if b[i][k]!='nil':
+                split = re.findall('\d+',b[i][k]) 
+                firstPair= int(split[0])
+                secondPair=int(split[1])
+                if Position>= firstPair and Position<=secondPair:
+                    bond['data'][i][k]='nil'
+    i=i+1
+
+
+# In[6]:
+
+
+#calculating length between sulfide bonds.
+temp=pd.Series(b.size,dtype=np.str)
+for i in range(a.size):
+    temp[i]=''
+
+for i in range(len(bond)):
+    for j in range(lenB[i]):
+        if bond['data'][i][j]!='nil':
+            split= re.findall('\d+',bond['data'][i][j])
+            temp[i]=str(temp[i] + str(int(split[1])-int(split[0]))+'|')
+data['glyco_outside_bond']=bond['data']
+
+
+# In[9]:
+
+
+#get the integer values.
+def getvalues(temp):
+    return re.findall('\d+',temp)
+intrabond_outside= temp.apply(getvalues)
+data['intrabond_glyco_outside_bond']=intrabond_outside
+
+
+# In[10]:
+
+
+#calculating avegrage lenth of sulphide bonds which do not have glyco inside.
+new =pd.Series(intrabond_outside)
+newlen=new.str.len()
+average= np.zeros(a.size)
+for i in range(a.size):
+    totalsum=0
+    for j in range(newlen[i]):
+        totalsum= totalsum+int(intrabond_outside[i][j])
+    if newlen[i]!=0:
+        average[i]=totalsum/newlen[i]
+data['average_Intrabond_outside_glyco_bond']=average
+
+
+
+# In[12]:
+
+
+data.to_excel('output.xlsx')
+
 

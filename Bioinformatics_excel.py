@@ -46,10 +46,10 @@ data=data.dropna().reset_index(drop=True) # Drop all rows which contains Not a n
 
 # Working on getting the relative positions of the Disulfide bond
 disulfide_column= data['Disulfide bond'] # Storing data temporary as 'disulfide_column'
-def getdata(newdata):
+def get_sulfide_value(newdata):
     return re.findall('\d+ \d+',newdata)
 
-data['Disulfide bond']= disulfide_column.apply(getdata) # Function call which gives all the positons 
+data['Disulfide bond']= disulfide_column.apply(get_sulfide_value) # Function call which gives all the positons 
 
 
 # In[2]:
@@ -66,9 +66,9 @@ data['Glycosylation']= Glyco_data.apply(getGlycoNLinked) # the return data will 
 
 #Now Removing the extra word 'N-linked' and getting all positions 
 temp_data= data['Glycosylation'].astype(str)
-def getValue(data):
+def get_gly_value(data):
     return re.findall('\d+',data) # return all positions
-data['Glycosylation']= temp_data.apply(getValue) 
+data['Glycosylation']= temp_data.apply(get_gly_value) 
 
 
 # Creating a temporary dataframe for total length in columns and length in rows(like number of pairs in each index).
@@ -249,9 +249,9 @@ data['glyco_outside_bond']=bond['data']
 
 
 #get the integer values.
-def getvalues(temp):
+def get_gly_outside_values(temp):
     return re.findall('\d+',temp)
-intrabond_outside= temp.apply(getvalues)
+intrabond_outside= temp.apply(get_gly_outside_values)
 data['intrabond_glyco_outside_bond']=intrabond_outside
 
 

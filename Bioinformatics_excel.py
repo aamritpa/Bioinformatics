@@ -20,9 +20,9 @@ import sys
 #Input file must be given to run the code.
 #For Example Run(in terminal) 'python3 Bioinformatics input.xlsx'
 
-#Filename =sys.argv[1] # Read input file 
+Filename =sys.argv[1] # Read input file 
 
-df = pd.read_excel('input.xlsx')# Read EXCEL Files and storing in database 'df'
+df = pd.read_excel(Filename)# Read EXCEL Files and storing in database 'df'
 data= pd.DataFrame()# Creating New Data Frame 
 
 

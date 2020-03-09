@@ -72,13 +72,8 @@ def get_float_value(data):
 # In[32]:
 
 
-N_linked = re.compile(r'N-linked')
 def get_Nlinked(data):
-    match = N_linked.search(data)
-    if match:
-        return re.findall('CARBOHYD \d+',data)
-    else:
-        return None
+    return re.findall('\d+\;\s*\/note=\"N-linked',data)
     
 Glyco_data= data['Glycosylation'] # Storing data temporary as 'Glyco_data'
 data['Glycosylation']= Glyco_data.apply(get_Nlinked) # the return data will be like 'CARBOHYD 110'

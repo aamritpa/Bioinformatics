@@ -84,7 +84,7 @@ for i in range(len(data)):
         totalsum= totalsum+int(average[i][j])
     averageintrabond[i]=totalsum/lenIntra[i]
 data['average_Intrabond']=averageintrabond
-
+data['total sulphide bonds']=lenB
 
 # In[ ]:
 

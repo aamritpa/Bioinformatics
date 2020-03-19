@@ -26,7 +26,7 @@ def get_integer_value(newdata):
     return re.findall('\d+',newdata)
 
 
-human_data=data[data['Organism'].str.contains("Homo sapiens")] #Selecting only organism which contains 'Homo sapiens'
+human_data=data[data['Organism']=='Homo sapiens (Human)'] #Selecting only organism which contains 'Homo sapiens'
 data= human_data.reset_index(drop=True)
 
 

@@ -53,7 +53,7 @@ data['Disulfide bond']=values
 
 
 # In[80]:
-human_data=data[data['Organism'].str.contains("Homo sapiens")] #Selecting only organism which contains 'Homo sapiens'
+human_data=data[data['Organism']=='Homo sapiens (Human)'] #Selecting only organism which contains 'Homo sapiens'
 data= human_data.reset_index(drop=True)
 
 #Intrabond distance formation

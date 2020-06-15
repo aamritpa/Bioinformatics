@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[44]:
+# In[1]:
 
 
 import numpy as np
@@ -16,7 +16,7 @@ from numpy import inf
 from ggplot import *
 
 
-# In[45]:
+# In[2]:
 
 
 df1 = pd.read_excel('FunctionalAnnotationChartScore0.xlsx')
@@ -25,7 +25,7 @@ df3 = pd.read_excel('FunctionalAnnotationChartScore10_20.xlsx')
 df4 = pd.read_excel('FunctionalAnnotationChartScore20_.xlsx')
 
 
-# In[46]:
+# In[3]:
 
 
 data1=pd.DataFrame()
@@ -33,13 +33,7 @@ data1['Term']=df1['Term']
 data1['PValue1']=df1['PValue']
 
 
-# In[ ]:
-
-
-
-
-
-# In[47]:
+# In[4]:
 
 
 data2=pd.DataFrame()
@@ -47,7 +41,7 @@ data2['Term']=df2['Term']
 data2['PValue2']=df2['PValue']
 
 
-# In[48]:
+# In[5]:
 
 
 data3=pd.DataFrame()
@@ -55,7 +49,7 @@ data3['Term']=df3['Term']
 data3['PValue3']=df3['PValue']
 
 
-# In[49]:
+# In[6]:
 
 
 data4=pd.DataFrame()
@@ -63,16 +57,28 @@ data4['Term']=df4['Term']
 data4['PValue4']=df4['PValue']
 
 
-# In[50]:
+# In[20]:
 
 
-newdata=pd.merge(data1, data2, on='Term',how="right")
-newdata=pd.merge(data3,newdata, on='Term', how='right')
-newdata=pd.merge(data4,newdata, on='Term', how='right')
+newdata=pd.merge(data1, data2, on='Term',how="outer")
+newdata=pd.merge(data3,newdata, on='Term', how='outer')
+newdata=pd.merge(data4,newdata, on='Term', how='outer')
+newdata.to_excel('test.xlsx')
+
+
+# In[21]:
+
+
 newdata=newdata.fillna(0)
 
 
-# In[51]:
+# In[24]:
+
+
+newdata
+
+
+# In[22]:
 
 
 newdata.to_excel('AllClusterScores(AcutalValue).xlsx')
@@ -88,7 +94,7 @@ plt.title('Score and PValue With Original Value')
 plt.savefig('PValue Comparison Plot(Actual Value).jpg')
 
 
-# In[52]:
+# In[25]:
 
 
 newdata['PValue1']=-np.log10(newdata['PValue1'])
@@ -102,7 +108,7 @@ newdata['PValue3'].replace(np.inf, 0, inplace=True)
 newdata['PValue4'].replace(np.inf, 0, inplace=True)
 
 
-# In[53]:
+# In[26]:
 
 
 plt.figure(figsize=(25,25))
@@ -117,7 +123,7 @@ plt.title('Score and PValue With Log Base')
 plt.savefig('PValue Comparison Plot(Log Value).jpg')
 
 
-# In[54]:
+# In[27]:
 
 
 newdata.to_excel('AllClusterScores(Log).xlsx')

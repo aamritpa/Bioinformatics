@@ -4,9 +4,6 @@ Bioinformatics
 
 Document Number: 1
 Revision: 1.0, Date: June 6, 2020
- 
-
-Sun’s Lab, Simon Fraser University
 British Columbia, Canada
 
 

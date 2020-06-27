@@ -10,45 +10,48 @@ Sun’s Lab, Simon Fraser University
 British Columbia, Canada
 
 
-Abstract:
+	Abstract:
 
-Abstract Proteins are large biomolecules, or macromolecules, consisting of one or several long chains of amino acids, i.e. polypeptides. Proteins have complex shapes that include various alpha helixes, beta sheets, loops, and disordered regions. Functions of Human proteins are determined by their structures and many of these structures are still unknown and difficult to derive experimentally. To solve this problem, computer-aided data modelling has been widely applied. Our project focuses on identifications of patterns between two specific post-translational modifications ─ sulfide pairs (i.e. disulfide bond) and N-glycosylation, in human proteins and examine how the positions of these post-translational modifications affect the structures thereof functions of proteins. Human protein data is download from UniProt, and python programming is used to compute the relative positions and relationships between disulfide bonds and N-glycosylation. Proteins with unique patterns of these modifications are identified, and their functions are further analyzed. Our study provides useful insights for structures and functions of proteins and particularly to proteins with unknown structures
-
-
-
-TABLE OF CONTENTS
-
-1.0 	System Requirements
-2.0 	Background Information
-3.0 	Executing Code
-4.0 	Functions and their working
-5.0 	References
+	Abstract Proteins are large biomolecules, or macromolecules, consisting of one or several long chains of amino acids, i.e. polypeptides. Proteins have complex shapes that include various alpha helixes, beta sheets, loops, and disordered regions. Functions of Human proteins are determined by their structures and many of these structures are still unknown and difficult to derive experimentally. To solve this problem, computer-aided data modelling has been widely applied. Our project focuses on identifications of patterns between two specific post-translational modifications ─ sulfide pairs (i.e. disulfide bond) and N-glycosylation, in human proteins and examine how the positions of these post-translational modifications affect the structures thereof functions of proteins. Human protein data is download from UniProt, and python programming is used to compute the relative positions and relationships between disulfide bonds and N-glycosylation. Proteins with unique patterns of these modifications are identified, and their functions are further analyzed. Our study provides useful insights for structures and functions of proteins and particularly to proteins with unknown structures
 
 
 
+	TABLE OF CONTENTS
 
-1.	System Requirement:
-To run the code, the following are the minimum requirements which must be satisfied.
-Python:
-The Python version supports for this code is 3.0+. The code does not support Python 2 version.
-System:  
-Supports Windows and Linux as long as Python 3+ is compatible with it.
-Python Libraries:
-In most of the cases the libraries are installed during the Python Installation but if somehow, they did not get installed then to run the code it requires to install Pandas, NumPy, Re (Regular Expression operators), Matplotlib, Sys (System-specific parameters and functions) libraries. 
+	1.0 	System Requirements
+	2.0 	Background Information
+	3.0 	Executing Code
+	4.0 	Functions and their working
+	5.0 	References
 
 
 
 
+	1.System Requirement:
+	To run the code, the following are the minimum requirements which must be satisfied.
+	
+	Python:
+	The Python version supports for this code is 3.0+. The code does not support Python 2 version.
+
+	System:  
+	Supports Windows and Linux as long as Python 3+ is compatible with it.
+
+	Python Libraries:
+	In most of the cases the libraries are installed during the Python Installation but if somehow, they did not get installed then to run the code it requires to install 		Pandas, NumPy, Re (Regular Expression operators), Matplotlib, Sys (System-specific parameters and functions) libraries. 
 
 
 
 
-2.	Background Information:
-The main strategy is to work with the sulfide bond positions and glycosylation positions and to figure out how the glycosylation position are inside sulfide bonds, outside sulfide bonds, N-terminus distance, C-terminus distance and so on. So, the first stage is to manage data and the second stage is to do data analysis.
 
-Downloading Data from UniProt Website
 
-Down below are the following steps to download data in correct form from Uniport website.
+
+
+	2.Background Information:
+	The main strategy is to work with the sulfide bond positions and glycosylation positions and to figure out how the glycosylation position are inside sulfide bonds, 		outside sulfide bonds, N-terminus distance, C-terminus distance and so on. So, the first stage is to manage data and the second stage is to do data analysis.
+
+	Downloading Data from UniProt Website
+
+	Down below are the following steps to download data in correct form from Uniport website.
 	•	Go to https://www.uniprot.org/
 	•	In the search bar type Humans, then click on reviewed articles.
 	•	Customize results table and select Entry, Entry name, Protein names, Genes names, Length, Organism, Mass, Status, Disulfide bond, Glycosylation. 
@@ -57,27 +60,27 @@ Down below are the following steps to download data in correct form from Uniport
 
 
 
-3.	Executing Code:
-The code requires some steps to follow to get the results. 
+	3.Executing Code:
+	The code requires some steps to follow to get the results. 
 
-Running the File: -
+	Running the File: -
 	•	Open Command Prompt in Windows or Terminal in Linux.
 	•	Setup the directory in the terminal where the code and UniProt files are present.
 
-Running the code for Excel File: 
+	Running the code for Excel File: 
 	•	Run this command in terminal: python3 Bioinformatics_excel.py input.xlsx    *
-Running the code for Tab-Separated File: 
+	Running the code for Tab-Separated File: 
 	•	Run this command in terminal: $ python3 Bioinformatics_tab.py input.tab       *
 
-*  Input.tab and Input.xlsx are the downloaded tab and excel files respectively from uniport website.
+	*  Input.tab and Input.xlsx are the downloaded tab and excel files respectively from uniport website.
 
-4.	Functions and their working:
+	4. Functions and their working:
+	
+	Part (1): Data Cleaning and Exploration of Sulfide bonds and Glycosylation
 
-Part (1): Data Cleaning and Exploration of Sulfide bonds and Glycosylation
+	In the Bioinformatics file includes data cleaning and ETL (Extract-Transform-Load) is done. The code has comments which help user to understand code and is divided into 	parts to make it efficient and clear.
 
-In the Bioinformatics file includes data cleaning and ETL (Extract-Transform-Load) is done. The code has comments which help user to understand code and is divided into parts to make it efficient and clear.
-
-Each Part Explanation and Functionality 
+	Each Part Explanation and Functionality 
 	
 	(1.1) Reading File and Data frame
 	
@@ -153,6 +156,6 @@ Each Part Explanation and Functionality
 
 
 
-5.	References:
-1.	Uniprot, https://www.uniprot.org/
-2.	David Bioinformatics Resources, https://david.ncifcrf.gov/
+	5.References:
+	1.	Uniprot, https://www.uniprot.org/
+	2.	David Bioinformatics Resources, https://david.ncifcrf.gov/
